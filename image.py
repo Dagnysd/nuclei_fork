@@ -32,6 +32,11 @@ class Image:
         self.ch2Intensity = None
         self.ch3Intensity = None
         self.ch4Intensity = None
+        self.ch1Background = None
+        self.ch2Background = None
+        self.ch3Background = None
+        self.ch4Background = None
+
     
     def calculateIntensitiesImage(self):
         num_channels = self.image.shape[-1]
@@ -289,9 +294,12 @@ class Image:
         properties = measure.regionprops(backgroundMask.astype(np.uint8), self.image)
         for prop in properties:
             intensities = prop.mean_intensity
-        intensity = intensities[1]
-        print(f"Mean background intensity: {intensity}")
-        return intensity
+
+        if len(intensities) > 3:
+            self.ch1Background, self.ch2Background, self.ch3Background, self.ch4Background = intensities
+        else:
+            self.ch1Background, self.ch2Background, self.ch3Background = intensities
+
         
         
     def viewImage(self):

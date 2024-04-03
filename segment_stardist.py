@@ -9,8 +9,8 @@ import czifile
 
 spacing = ([0.3459, 0.3459, 0.9278])
 
-folder_path = "imagesAndMasks/liv/mec"
-image_files = glob.glob(f"{folder_path}/*.czi")
+folder_path = "test_seg"
+image_files = glob.glob(f"{folder_path}/*.lsm")
 
 
 model = StarDist3D(None, name='MEC0.1', basedir='models')
@@ -35,7 +35,7 @@ def segment(img_path):
     directory, filename = os.path.split(img_path)
     without_extension, extension = os.path.splitext(filename)
     mask_file_name = f"{without_extension}_mask.tif"
-    mask_path = os.path.join("imagesAndMasks/liv/masks", mask_file_name)
+    mask_path = os.path.join("test_seg", mask_file_name)
 
     io.imsave(mask_path, labels)
 

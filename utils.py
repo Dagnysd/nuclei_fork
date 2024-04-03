@@ -52,7 +52,7 @@ def match_images_and_masks(image_folder, mask_folder, roi_folder=None):
         mask_path = os.path.join(mask_folder, os.path.basename(image_path).replace('.lsm', '_mask.tif'))
         print(mask_path)
         if roi_folder != None:
-            roi_path = os.path.join(roi_folder, os.path.basename(image_path).replace('.lsm', ' DG.tif'))
+            roi_path = os.path.join(roi_folder, os.path.basename(image_path).replace('.lsm', '_roi.tif'))
             print(roi_path)
         if os.path.exists(mask_path) and os.path.exists(roi_path):
             image_files.append([image_path, mask_path, roi_path])
@@ -97,10 +97,10 @@ def createDataframe(obj, condition):
                 'Ch3Intensity': nucleus.ch3Intensity,
                 'Ch4Intensity': nucleus.ch4Intensity,
                 'gfpPositive': nucleus.gfpPositive,
-                #'CytoCh1Intensity': nucleus.cyto_ch1_intensity,
-                #'CytoCh2Intensity': nucleus.cyto_ch2_intensity,
-                #'CytoCh3Intensity': nucleus.cyto_ch3_intensity,
-               # 'CytoCh4Intensity': nucleus.cyto_ch4_intensity,
+                'CytoCh1Intensity': nucleus.cyto_ch1_intensity,
+                'CytoCh2Intensity': nucleus.cyto_ch2_intensity,
+                'CytoCh3Intensity': nucleus.cyto_ch3_intensity,
+                'CytoCh4Intensity': nucleus.cyto_ch4_intensity,
                 # Add more attributes as needed
         }
             # Append the nucleus dictionary to the nuclei_data list
@@ -109,6 +109,27 @@ def createDataframe(obj, condition):
 # Create a DataFrame from the list of dictionaries
     nuclei_df = pd.DataFrame(nuclei_data)
     return nuclei_df
+
+
+def createImageDataframe(object, condition):
+    image_dict = {
+        'Condition': condition,
+        'ImageName': [object.name],
+        'CA1Volume': [object.ca1Volume],
+        'CA3Volume': [object.ca3Volume],
+        'DGVolume': [object.dgVolume],
+        'Ch1Intensity': [object.ch1Intensity],
+        'Ch2Intensity': [object.ch2Intensity],
+        'Ch3Intensity': [object.ch3Intensity],
+        'Ch4Intensity': [object.ch4Intensity],
+        'Shape': [object.image.shape],
+        'Ch1Background': [object.ch1Background],
+        'Ch2Background': [object.ch2Background],
+        'Ch3Background': [object.ch3Background],
+        'Ch4Background': [object.ch4Background],
+    }
+    image_df = pd.DataFrame(image_dict)
+    return image_df
 
 def readImage(imagePath):
     import czifile
@@ -119,3 +140,26 @@ def readImage(imagePath):
     else:
         image = io.imread(imagePath)
     return image
+
+def measureNuclei(objects, condition):
+    nucleus_df = pd.DataFrame()
+    images_df = pd.DataFrame()
+    for object in objects:
+        print(object.name, len(object.nuclei))
+        object.nuclei = object.classifyCells(inspect_classified_masks=False, plot_selectionChannel=False)
+        object.calculate_nuclei_locations()
+        object.calculateRoiVolume()
+        object.calculateIntensitiesImage()
+        object.measureBackground()
+        #object.measureCyto()
+        #object.visualize_nuclei_locations()
+        object_df = createDataframe(object, condition=condition)
+        image_df = createImageDataframe(object, condition)
+        nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
+        images_df = pd.concat([images_df, image_df], ignore_index=True)
+    
+    return nucleus_df, images_df
+
+
+        
+
