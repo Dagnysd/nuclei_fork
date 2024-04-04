@@ -1,4 +1,4 @@
-from utils import match_images_and_masks, initializeImages, createDataframe, match_images_and_masks_without_ROI
+from utils import match_images_and_masks, initializeImages, createDataframe, match_images_and_masks_without_ROI, measureNuclei
 from image import Image
 import os
 import numpy as np
@@ -30,62 +30,27 @@ image_objects_mec = initializeImages(image_files_mec)
 #image_objects_gfp = initializeImages(image_files_gfp)
 
 
-nucleus_df = pd.DataFrame(columns=['Condition', 'ImageName','Label', 'Area', 'Centroid', 'CellType', 'Location', 'Ch1Intensity', 'Ch2Intensity', 'Ch3Intensity', 'Ch4Intensity', 'gfpPositive'])
+nucleus_df = pd.DataFrame()
+image_df = pd.DataFrame()
 
-for object in image_objects_dg:
-    object.nuclei = object.getNeurons(channel=1)
-    object.nuclei = object.getPositiveGFP(channel=3)
-    #object.calculate_nuclei_locations()
-    #object.visualize_nuclei_locations()
-    object_df = createDataframe(object, condition='DG')
-    nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
+dg_df, contraImages_df = measureNuclei(image_objects_dg, 'DG', useROI=False)
+nucleus_df = pd.concat([nucleus_df, dg_df])
+image_df = pd.concat([image_df, contraImages_df])
 
-for object in image_objects_ca1:
-    print(object.name, len(object.nuclei))
-    object.nuclei = object.getNeurons(channel=1)
-    object.nuclei = object.getPositiveGFP(channel=3)
-    #object.calculate_nuclei_locations()
-    #object.visualize_nuclei_locations()
-    object_df = createDataframe(object, condition='CA1')
-    nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
+ca1_df, ipsiImages_df = measureNuclei(image_objects_ca1, 'CA1', useROI=False)
+nucleus_df = pd.concat([nucleus_df, ca1_df])
+image_df = pd.concat([image_df, contraImages_df])
 
-for object in image_objects_ca3:
-    print(object.name, len(object.nuclei))
-    object.nuclei = object.getNeurons(channel=1)
-    object.nuclei = object.getPositiveGFP(channel=3)
-    #object.calculate_nuclei_locations()
-    #object.visualize_nuclei_locations()
-    object_df = createDataframe(object, condition='CA3')
-    nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
+ca3_df, shamImages_df = measureNuclei(image_objects_ca3, 'CA3', useROI=False)
+nucleus_df = pd.concat([nucleus_df, ca3_df])
+image_df = pd.concat([image_df, contraImages_df])
 
-for object in image_objects_mec:
-    print(object.name, len(object.nuclei))
-    object.nuclei = object.getNeurons(channel=1)
-    object.nuclei = object.getPositiveGFP(channel=3)
-    #object.calculate_nuclei_locations()
-    #object.visualize_nuclei_locations()
-    object_df = createDataframe(object, condition='MEC')
-    nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
+mec_df, shamImages_df = measureNuclei(image_objects_mec, 'MEC', useROI=False)
+nucleus_df = pd.concat([nucleus_df, mec_df])
+image_df = pd.concat([image_df, contraImages_df])
 
-# for object in image_objects_ca3:
-#     print(object.name, len(object.nuclei))
-#     object.nuclei = object.getNeurons(channel=1)
-#     object.nuclei = object.getPositiveGFP(channel=3)
-#     object_df = createDataframe(object, condition='CA3')
-#     nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
 
-# for object in image_objects_dg:
-#     print(object.name, len(object.nuclei))
-#     object.nuclei = object.getNeurons(channel=1)
-#     object.nuclei = object.getPositiveGFP(channel=3)
-#     object_df = createDataframe(object, condition='DG')
-#     nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
-
-# for object in image_objects_gfp:
-#     print(object.name, len(object.nuclei))
-#     object.nuclei = object.classifyCells(inspect_classified_masks=False, plot_selectionChannel=True, channel=3)
-#     object_df = createDataframe(object, condition='HeterozygousKnockout')
-#     nucleus_df = pd.concat([nucleus_df, object_df], ignore_index=True)
-
-nucleus_df.to_csv("dataAnalysisNotebooks/csv/nuclei_liv_2.csv", index=False)
+nucleus_df = nucleus_df.dropna(axis=1, how='all')
+nucleus_df.to_csv("dataAnalysisNotebooks/csv/nuclei_liv_test.csv", index=False)
+image_df.to_csv("dataAnalysisNotebooks/csv/images_liv_test.csv", index=False)
 

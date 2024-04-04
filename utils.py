@@ -141,17 +141,19 @@ def readImage(imagePath):
         image = io.imread(imagePath)
     return image
 
-def measureNuclei(objects, condition):
+def measureNuclei(objects, condition, measureCyto = False, useROI = False):
     nucleus_df = pd.DataFrame()
     images_df = pd.DataFrame()
     for object in objects:
         print(object.name, len(object.nuclei))
-        object.nuclei = object.classifyCells(inspect_classified_masks=False, plot_selectionChannel=False)
-        object.calculate_nuclei_locations()
-        object.calculateRoiVolume()
+        #object.nuclei = object.classifyCells(inspect_classified_masks=False, plot_selectionChannel=False)
         object.calculateIntensitiesImage()
         object.measureBackground()
-        #object.measureCyto()
+        if useROI:
+            object.calculate_nuclei_locations()
+            object.calculateRoiVolume()
+        if measureCyto:
+            object.measureCyto()
         #object.visualize_nuclei_locations()
         object_df = createDataframe(object, condition=condition)
         image_df = createImageDataframe(object, condition)

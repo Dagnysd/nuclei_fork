@@ -15,7 +15,6 @@ sham_image_folder ="imagesAndMasks\GFAP\images\sham"
 sham_mask_folder = "imagesAndMasks\GFAP\masks"
 
 sham_images = match_images_and_masks(sham_image_folder, sham_mask_folder,roi_folder)
-print(sham_images)
 ipsi_images = match_images_and_masks(ipsi_image_folder, HI_mask_folder,roi_folder)
 contra_images = match_images_and_masks(contra_image_folder, HI_mask_folder,roi_folder)
 contra_objects = initializeImages(contra_images)
@@ -27,15 +26,15 @@ nucleus_df = pd.DataFrame()
 image_df = pd.DataFrame()
 
 
-contra_df, contraImages_df = measureNuclei(contra_objects, 'Contra')
+contra_df, contraImages_df = measureNuclei(contra_objects, 'Contra', useROI=True)
 nucleus_df = pd.concat([nucleus_df, contra_df])
 image_df = pd.concat([image_df, contraImages_df])
 
-ipsi_df, ipsiImages_df = measureNuclei(ipsi_objects, 'Ipsi')
+ipsi_df, ipsiImages_df = measureNuclei(ipsi_objects, 'Ipsi', useROI=True)
 nucleus_df = pd.concat([nucleus_df, contra_df])
 image_df = pd.concat([image_df, contraImages_df])
 
-sham_df, shamImages_df = measureNuclei(sham_objects, 'Sham')
+sham_df, shamImages_df = measureNuclei(sham_objects, 'Sham', useROI=True)
 nucleus_df = pd.concat([nucleus_df, contra_df])
 image_df = pd.concat([image_df, contraImages_df])
 
