@@ -5,3 +5,7 @@
 *.czi
 *.png
 *.pyc
+*.db
+
+
+.DS_Store
