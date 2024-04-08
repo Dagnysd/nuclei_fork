@@ -1,5 +1,5 @@
 from utils import match_images_and_masks, initializeImages, createDataframe, match_images_and_masks_without_ROI, measureNuclei
-from plot_functions import plotNeuronsRegions, plotNeuronsRegionsbyRegion, plotRegionNeuronsDensity
+from archived_scripts.plot_functions import plotNeuronsRegions, plotNeuronsRegionsbyRegion, plotRegionNeuronsDensity
 from image import Image
 import os
 import numpy as np

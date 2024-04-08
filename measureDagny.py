@@ -14,20 +14,15 @@ mask_folder = 'imagesAndMasks/liv/masks'
 
 
 image_files_dg = match_images_and_masks_without_ROI(image_folder_dg, mask_folder)
-print(image_files_dg)
 image_files_ca1 = match_images_and_masks_without_ROI(image_folder_ca1, mask_folder)
 image_files_ca3 = match_images_and_masks_without_ROI(image_folder_ca3, mask_folder)
 image_files_mec = match_images_and_masks_without_ROI(image_folder_mec, mask_folder)
 
-#image_files_ca3 = match_images_and_masks_without_ROI(image_folder_ca3, mask_folder)
-#image_files_dg = match_images_and_masks_without_ROI(image_folder_dg, mask_folder)
 image_objects_dg = initializeImages(image_files_dg)
 image_objects_ca1 = initializeImages(image_files_ca1)
 image_objects_ca3 = initializeImages(image_files_ca3)
 image_objects_mec = initializeImages(image_files_mec)
-#image_objects_ca3 = initializeImages(image_files_ca3)
-#image_objects_dg = initializeImages(image_files_dg)
-#image_objects_gfp = initializeImages(image_files_gfp)
+
 
 
 nucleus_df = pd.DataFrame()
