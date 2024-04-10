@@ -4,17 +4,18 @@ from skimage import io
 from stardist.models import StarDist3D
 from csbdeep.utils import normalize
 import glob
-import czifile
+import tensorflow as tf
 from utils import readImage
 
 
 spacing = ([0.3459, 0.3459, 0.9278])
 
 folder_path = "test_seg"
-image_files = glob.glob(f"{folder_path}/*.lsm")
+image_files = glob.glob(f"{folder_path}/*.czi")
 
+print("available devices: ",tf.config.list_physical_devices('GPU'))
 
-model = StarDist3D(None, name='MEC0.1', basedir='models')
+model = StarDist3D(None, name='MEC0.3', basedir='models')
 
 def segment(img_path):
 

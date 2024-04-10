@@ -38,6 +38,7 @@ print(Y)
 X = list(map(imread,X))
 Y = list(map(imread,Y))
 
+print("available devices: ",tf.config.list_physical_devices('GPU'))
 
 n_channel = 1 if X[0].ndim == 3 else X[0].shape[-1]
 
@@ -69,7 +70,7 @@ print('empirical anisotropy of labeled objects = %s' % str(anisotropy))
 n_rays = 96
 
 # Use OpenCL-based computations for data generator during training (requires 'gputools')
-use_gpu = True and gputools_available()
+use_gpu = True # and gputools_available()
 
 # Predict on subsampled grid for increased efficiency and larger field of view
 grid = tuple(1 if a > 1.5 else 4 for a in anisotropy)
@@ -96,7 +97,7 @@ conf = Config3D (
     # alternatively, try this:
 #    limit_gpu_memory(None, allow_growth=True)
 
-model = StarDist3D(conf, name='MEC0.1', basedir='models')
+model = StarDist3D(conf, name='MEC0.4', basedir='models')
 
 
 median_size = calculate_extents(Y, np.median)
@@ -171,5 +172,5 @@ ax2.set_ylabel('Number #')
 ax2.grid()
 ax2.legend()
 
-plt.savefig('modelPerformance2.pdf')
+plt.savefig('modelPerformance4.pdf')
 plt.show()
