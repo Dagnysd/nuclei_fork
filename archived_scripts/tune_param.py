@@ -62,21 +62,21 @@ class SegmentationModel(BaseEstimator, TransformerMixin):
         return labels
 
 param_grid = {
-    'sigma': [2.0],
+    'sigma': [1.5, 2.0, 2.5],
     'clip_limit': [0.01],
-    'kernel_size': [5, 7],
-    'opening_radius': [1, 2, 3],
-    'closing_radius': [1, 2, 3],
+    'kernel_size': [5, 7,9],
+    'opening_radius': [1, 2, 3, 5],
+    'closing_radius': [1, 2, 3, 5],
     'min_region_size': [400],
-    'footprint_z': [3,5,7],
+    'footprint_z': [3,5,7,9],
     'footprint': [5,7,9,11,13],
     'kernel_thresh': [251],
 }
 
 kf = KFold(n_splits=2, shuffle=True, random_state=42)
 
-X_folder = 'X'
-y_folder = 'y'
+X_folder = 'D:/Users\Jonas/nuclei\X'
+y_folder = 'D:/Users\Jonas/nuclei\y'
 
 X_file_names = sorted(os.listdir(X_folder))
 y_file_names = sorted(os.listdir(y_folder))
