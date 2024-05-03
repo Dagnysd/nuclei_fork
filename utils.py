@@ -9,7 +9,6 @@ import numpy as np
 from nucleus import Nucleus
 
 def getNucleiFromImage(imageFilename, maskFilename, imageName):
-    print(imageFilename, maskFilename)
 
     if '.czi' in imageFilename:
         image = czifile.imread(imageFilename)
@@ -44,18 +43,17 @@ def getNucleiFromImage(imageFilename, maskFilename, imageName):
             ))
 
     return nuclei
-def match_images_and_masks(image_folder, mask_folder, roi_folder=None):
+def match_images_and_masks(image_folder, mask_folder, roi_folder=None, imageFormat='.czi', maskSuffix='_mask.tif', roiSuffix='_roi.tif'):
     image_files = []
-    images = glob.glob(os.path.join(image_folder, '*.lsm'))
+    images = glob.glob(os.path.join(image_folder, f'*{imageFormat}'))
     for image_path in images:
-        print(image_path)
-        mask_path = os.path.join(mask_folder, os.path.basename(image_path).replace('.lsm', '_mask.tif'))
-        print(mask_path)
+        mask_path = os.path.join(mask_folder, os.path.basename(image_path).replace(imageFormat, maskSuffix))
         if roi_folder != None:
-            roi_path = os.path.join(roi_folder, os.path.basename(image_path).replace('.lsm', '_roi.tif'))
-            print(roi_path)
+            roi_path = os.path.join(roi_folder, os.path.basename(image_path).replace(imageFormat, roiSuffix))
         if os.path.exists(mask_path) and os.path.exists(roi_path):
             image_files.append([image_path, mask_path, roi_path])
+        else:
+            image_files.append([image_path, mask_path])
     return image_files
 
 def match_images_and_masks_without_ROI(image_folder, mask_folder, roi_folder=None):
@@ -66,17 +64,19 @@ def match_images_and_masks_without_ROI(image_folder, mask_folder, roi_folder=Non
         image_files.append([image_path, mask_path])
     return image_files
 
-def initializeImages(images):
+def initializeImages(images, useROI):
     from image import Image
     objects = []
     for image_info in images:
         name = os.path.basename(image_info[0])
         if len(image_info) > 2:  
-            print(image_info[0], image_info[1], image_info[2])
             image_obj = Image(name, image_info[0], image_info[1], image_info[2])
-        else:
+            objects.append(image_obj)
+        elif useROI==False:
             image_obj = Image(name, image_info[0], image_info[1])
-        objects.append(image_obj)
+            objects.append(image_obj)
+        else:
+            print(f"No ROI found for image {name}")
     return objects
 
 def createDataframe(obj, condition):
@@ -162,6 +162,20 @@ def measureNuclei(objects, condition, measureCyto = False, useROI = False):
     
     return nucleus_df, images_df
 
+def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, useROI=False, measureCyto=False):
+    nucleus_df = pd.DataFrame()
+    image_df = pd.DataFrame()
 
+    for index, condition in enumerate(conditions):
+        imageFolder = imageFolders[index]
+        images = match_images_and_masks(imageFolder, maskFolder, roiFolder, imageFormat=imageFormat, maskSuffix=maskSuffix, roiSuffix=roiSuffix)
+        objects = initializeImages(images, useROI)
+        n_df, i_df = measureNuclei(objects, condition, useROI=useROI, measureCyto=measureCyto)
+        nucleus_df = pd.concat([nucleus_df, n_df])
+        image_df = pd.concat([image_df, i_df])
+
+    nucleus_df = nucleus_df.dropna(axis=1, how='all')
+    nucleus_df.to_csv(nucleusDataframeOutputPath, index=False)
+    image_df.to_csv(imageDataframeOutputPath, index=False)
         
 

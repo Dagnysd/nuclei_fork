@@ -163,9 +163,9 @@ class Image:
 
             # Assign location based on the region
             if region == 1:
-                nucleus.location = "DG"
+                nucleus.location = "HC"
             elif region == 2:
-                nucleus.location = "CA3"
+                nucleus.location = "Edge"
             elif region == 3:
                 nucleus.location = "DG"
             else:
