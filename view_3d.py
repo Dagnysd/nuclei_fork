@@ -9,7 +9,7 @@ from utils import readImage
 # img = np.squeeze(img)
 # img = np.transpose(img, (1,2,3,0))
 
-img = readImage('imagesAndMasks/iba1/contra/HI 2 Contralateral Mouse 10 Slide 15  IBA1green GFAPpink Col1a1red 40x 4x4 technical replica 1.lsm')
+img = readImage('Sham 1 Contralateral Mouse 6 Slide 11  NeunRed Calb Green KI67 Magenta 40x 3x3 technical replica 2.lsm')
 #mask = io.imread("imagesAndMasks/iba1/masks/Sham 1 Contralateral Mouse 6 Slide 8 IBA1green GFAPpink Col1a1red 40x 4x4 technical replica 1_mask.tif")
 #mask_star = io.imread("imagesAndMasks/test_compare/test2_mask.tif")
 spacing = ([0.9278349, 0.3459441, 0.3459441])
