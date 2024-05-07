@@ -24,4 +24,4 @@ def extend_region_masks(input_folder, output_folder):
 
         print(f"Extended mask saved: {output_path}")
 
-extend_region_masks("imagesAndMasks/iba1/roi", "imagesAndMasks/iba1/roi_extended")
+extend_region_masks("imagesAndMasks/tunel/roi", "imagesAndMasks/tunel/roi_extended")

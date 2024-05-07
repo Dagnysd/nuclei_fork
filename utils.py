@@ -28,8 +28,12 @@ def getNucleiFromImage(imageFilename, maskFilename, imageName):
         region_mean_intensity = prop.mean_intensity
         if len(region_mean_intensity) > 3:
             ch1_intensity, ch2_intensity, ch3_intensity, ch4_intensity= region_mean_intensity
-        else:
+        elif len(region_mean_intensity) == 3:
             ch1_intensity, ch2_intensity, ch3_intensity= region_mean_intensity
+            ch4_intensity = None
+        else:
+            ch1_intensity, ch2_intensity= region_mean_intensity
+            ch3_intensity = None
             ch4_intensity = None
         nuclei.append(
             Nucleus(imageName,
@@ -141,7 +145,7 @@ def readImage(imagePath):
         image = io.imread(imagePath)
     return image
 
-def measureNuclei(objects, condition, measureCyto = False, useROI = False):
+def measureNuclei(objects, condition, roiNames, measureCyto = False, useROI = False):
     nucleus_df = pd.DataFrame()
     images_df = pd.DataFrame()
     for object in objects:
@@ -150,7 +154,7 @@ def measureNuclei(objects, condition, measureCyto = False, useROI = False):
         object.calculateIntensitiesImage()
         object.measureBackground()
         if useROI:
-            object.calculate_nuclei_locations()
+            object.calculate_nuclei_locations(roiNames)
             object.calculateRoiVolume()
         if measureCyto:
             object.measureCyto()
@@ -162,7 +166,7 @@ def measureNuclei(objects, condition, measureCyto = False, useROI = False):
     
     return nucleus_df, images_df
 
-def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, useROI=False, measureCyto=False):
+def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, roiNames, useROI=False, measureCyto=False):
     nucleus_df = pd.DataFrame()
     image_df = pd.DataFrame()
 
@@ -170,7 +174,7 @@ def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat,
         imageFolder = imageFolders[index]
         images = match_images_and_masks(imageFolder, maskFolder, roiFolder, imageFormat=imageFormat, maskSuffix=maskSuffix, roiSuffix=roiSuffix)
         objects = initializeImages(images, useROI)
-        n_df, i_df = measureNuclei(objects, condition, useROI=useROI, measureCyto=measureCyto)
+        n_df, i_df = measureNuclei(objects, condition, useROI=useROI, measureCyto=measureCyto, roiNames=roiNames)
         nucleus_df = pd.concat([nucleus_df, n_df])
         image_df = pd.concat([image_df, i_df])
 

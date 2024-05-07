@@ -10,8 +10,8 @@ from utils import readImage
 
 spacing = ([0.3459, 0.3459, 0.9278])
 
-folder_path = "imagesAndMasks/iba1/ipsi"
-image_files = glob.glob(f"{folder_path}/*.lsm")
+folder_path = "imagesAndMasks/tunel/sham"
+image_files = glob.glob(f"{folder_path}/*.czi")
 
 print("available devices: ",tf.config.list_physical_devices('GPU'))
 
@@ -24,14 +24,14 @@ def segment(img_path):
     if new_image.shape[-1] == 4:
         normalized = normalize(new_image[:,:,:,3])
     else:
-        normalized = normalize(new_image[:,:,:,2])
+        normalized = normalize(new_image[:,:,:,1])
 
     labels, _ = model.predict_instances(normalized, n_tiles=(6,6,3))
 
     directory, filename = os.path.split(img_path)
     without_extension, extension = os.path.splitext(filename)
     mask_file_name = f"{without_extension}_mask.tif"
-    mask_path = os.path.join("imagesAndMasks/iba1/masks", mask_file_name)
+    mask_path = os.path.join("imagesAndMasks/tunel/masks", mask_file_name)
 
     io.imsave(mask_path, labels)
 

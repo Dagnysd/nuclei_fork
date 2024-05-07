@@ -43,7 +43,8 @@ class Image:
 
         self.ch1Intensity = np.mean(self.image[:, :, :, 0])
         self.ch2Intensity = np.mean(self.image[:, :, :, 1])
-        self.ch3Intensity = np.mean(self.image[:, :, :, 2])
+        if num_channels >= 3:
+            self.ch3Intensity = np.mean(self.image[:, :, :, 2])
         if num_channels >= 4:
             self.ch4Intensity = np.mean(self.image[:, :, :, 3])
 
@@ -153,7 +154,7 @@ class Image:
         
 
     
-    def calculate_nuclei_locations(self):
+    def calculate_nuclei_locations(self, names):
         for nucleus in self.nuclei:
             # Calculate the centroid of the nucleus
             centroid_z, centroid_y, centroid_x = nucleus.centroid  # Assuming centroid is in (x, y, z) format
@@ -162,14 +163,7 @@ class Image:
             region = self.roi[int(centroid_z), int(centroid_y), int(centroid_x)]  # Adjust indexing for 3D
 
             # Assign location based on the region
-            if region == 1:
-                nucleus.location = "HC"
-            elif region == 2:
-                nucleus.location = "Edge"
-            elif region == 3:
-                nucleus.location = "DG"
-            else:
-                nucleus.location = "Undefined"
+            nucleus.location = names.get(region, "Undefined")
     def visualize_nuclei_locations(self):
     # Create a Napari viewer
         viewer = napari.Viewer()
@@ -297,8 +291,10 @@ class Image:
 
         if len(intensities) > 3:
             self.ch1Background, self.ch2Background, self.ch3Background, self.ch4Background = intensities
-        else:
+        elif len(intensities) > 2:
             self.ch1Background, self.ch2Background, self.ch3Background = intensities
+        else:
+             self.ch1Background, self.ch2Background = intensities
 
         
         
