@@ -12,7 +12,6 @@ class Nucleus:
         self.ch2Intensity = ch2Intensity
         self.ch3Intensity = ch3Intensity
         self.ch4Intensity = ch4Intensity
-        self.gfpPositive = None
         self.cyto_ch1_intensity = None
         self.cyto_ch2_intensity = None
         self.cyto_ch3_intensity = None
