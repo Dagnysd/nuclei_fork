@@ -5,10 +5,8 @@ from stardist.models import StarDist3D
 from csbdeep.utils import normalize
 import glob
 import tensorflow as tf
-from utils import readImage
+from utils.utils import readImage
 
-
-spacing = ([0.3459, 0.3459, 0.9278])
 
 folder_path = "imagesAndMasks/tunel/sham"
 image_files = glob.glob(f"{folder_path}/*.czi")
