@@ -60,24 +60,17 @@ def match_images_and_masks(image_folder, mask_folder, roi_folder=None, imageForm
             image_files.append([image_path, mask_path])
     return image_files
 
-def match_images_and_masks_without_ROI(image_folder, mask_folder, roi_folder=None):
-    image_files = []
-    images = glob.glob(os.path.join(image_folder, '*.czi'))
-    for image_path in images:
-        mask_path = os.path.join(mask_folder, os.path.basename(image_path).replace('.czi', '_mask.tif'))
-        image_files.append([image_path, mask_path])
-    return image_files
 
-def initializeImages(images, useROI):
+def initializeImages(images, useROI, scale):
     from image import Image
     objects = []
     for image_info in images:
         name = os.path.basename(image_info[0])
         if len(image_info) > 2:  
-            image_obj = Image(name, image_info[0], image_info[1], image_info[2])
+            image_obj = Image(name, image_info[0], image_info[1], image_info[2], scale=scale)
             objects.append(image_obj)
         elif useROI==False:
-            image_obj = Image(name, image_info[0], image_info[1])
+            image_obj = Image(name, image_info[0], image_info[1],scale=scale)
             objects.append(image_obj)
         else:
             print(f"No ROI found for image {name}")
@@ -166,7 +159,7 @@ def measureNuclei(objects, condition, roiNames, measureCyto = False, useROI = Fa
     
     return nucleus_df, images_df
 
-def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, roiNames, useROI=False, measureCyto=False):
+def measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, roiNames, useROI=False, measureCyto=False, scale=[1,1,1]):
     nucleus_df = pd.DataFrame()
     image_df = pd.DataFrame()
 

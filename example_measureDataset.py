@@ -4,7 +4,6 @@ from utils import measureDataset
 #
 #   This example file demonstrates how one may measure the properties of a dataset 
 #
-
 #
 #   conditions
 #       The identifier that distinguishes one set of images from another
@@ -21,7 +20,7 @@ conditions = ['HI_Sham','Sham_Contra', 'Contra', 'Ipsi']
 imageFolders = ["imagesAndMasks/tunel/sham", 'imagesAndMasks/tunel/contra', "imagesAndMasks/tunel/ipsi"] 
 maskFolder = "imagesAndMasks/tunel/masks"
 roiFolder = 'imagesAndMasks/tunel/roi_extended'
-
+scale = [0.9278, 0.3459, 0.3459]
 useROI = True
 roiNames = {1: 'CA1', 2: 'CA3', 3: 'DG'}
 measureCyto = False
@@ -35,5 +34,5 @@ imageDataframeOutputPath = 'dataAnalysisNotebooks/csv/images_tunnel_test.csv'
 
 
 
-measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, useROI=useROI, measureCyto=measureCyto, roiNames = roiNames)
+measureDataset(conditions, imageFolders, maskFolder, roiFolder, imageFormat, maskSuffix, roiSuffix, nucleusDataframeOutputPath, imageDataframeOutputPath, useROI=useROI, measureCyto=measureCyto, roiNames = roiNames, scale = scale)
 

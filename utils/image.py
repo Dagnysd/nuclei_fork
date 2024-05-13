@@ -11,9 +11,9 @@ from scipy.ndimage import distance_transform_edt, binary_dilation, maximum_filte
 from scipy.spatial import cKDTree
 
 class Image:
-    def __init__(self, name, imageFilepath, maskFilepath, roi_mask = None):
+    def __init__(self, name, imageFilepath, maskFilepath, roi_mask = None, scale=[1,1,1]):
         self.name = name
-        self.scale = ([0.9278, 0.3459, 0.3459])
+        self.scale = scale
         self.nuclei = getNucleiFromImage(imageFilepath, maskFilepath, self.name)
         self.masks = io.imread(maskFilepath)
         if '.czi' in imageFilepath:
