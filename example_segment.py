@@ -8,8 +8,14 @@ import tensorflow as tf
 from utils.utils import readImage
 
 
-folder_path = "imagesAndMasks/tunel/sham"
-image_files = glob.glob(f"{folder_path}/*.czi")
+input_path = "path/to/images"
+output_path = "path/to/masks"
+mask_suffix = "_mask.tif"
+file_format = ".czi"
+nucleus_channel = 2
+
+
+image_files = glob.glob(f"{input_path}/*{file_format}")
 
 print("available devices: ",tf.config.list_physical_devices('GPU'))
 
@@ -19,17 +25,14 @@ def segment(img_path):
 
     new_image = readImage(img_path)
     
-    if new_image.shape[-1] == 4:
-        normalized = normalize(new_image[:,:,:,3])
-    else:
-        normalized = normalize(new_image[:,:,:,1])
+    normalized = normalize(new_image[:,:,:,nucleus_channel])
 
     labels, _ = model.predict_instances(normalized, n_tiles=(6,6,3))
 
     directory, filename = os.path.split(img_path)
     without_extension, extension = os.path.splitext(filename)
-    mask_file_name = f"{without_extension}_mask.tif"
-    mask_path = os.path.join("imagesAndMasks/tunel/masks", mask_file_name)
+    mask_file_name = f"{without_extension}{mask_suffix}"
+    mask_path = os.path.join(output_path, mask_file_name)
 
     io.imsave(mask_path, labels)
 

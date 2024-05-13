@@ -70,7 +70,7 @@ print('empirical anisotropy of labeled objects = %s' % str(anisotropy))
 n_rays = 96
 
 # Use OpenCL-based computations for data generator during training (requires 'gputools')
-use_gpu = True # and gputools_available()
+use_gpu = True and gputools_available()
 
 # Predict on subsampled grid for increased efficiency and larger field of view
 grid = tuple(1 if a > 1.5 else 4 for a in anisotropy)
