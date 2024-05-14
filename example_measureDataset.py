@@ -20,6 +20,7 @@ conditions = ['HI_Sham','Sham_Contra', 'Contra', 'Ipsi']
 imageFolders = ["imagesAndMasks/tunel/sham", 'imagesAndMasks/tunel/contra', "imagesAndMasks/tunel/ipsi"] 
 maskFolder = "imagesAndMasks/tunel/masks"
 roiFolder = 'imagesAndMasks/tunel/roi_extended'
+
 scale = [0.9278, 0.3459, 0.3459]
 useROI = True
 roiNames = {1: 'CA1', 2: 'CA3', 3: 'DG'}

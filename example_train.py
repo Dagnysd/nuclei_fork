@@ -19,6 +19,17 @@ from stardist import Rays_GoldenSpiral
 from stardist.matching import matching, matching_dataset
 from stardist.models import Config3D, StarDist3D
 
+
+#
+#   This script preforms training of a Stardist segmentation model.
+#   
+#   In order to train, enter the path to the training images (X) and ground truth labels (y).
+#   
+#
+#   Training can be monitored using Tensorboard by entering tensorboard --logdir=. in the terminal and
+#   connect to http://localhost:6006/
+
+
 np.random.seed(66)
 lbl_cmap = random_label_cmap()
 
@@ -26,6 +37,7 @@ lbl_cmap = random_label_cmap()
 
 X = sorted(glob("X/*.tif"))
 Y = sorted(glob("y/*.tif"))
+
 
 #assert all(Path(x).name==Path(y).name for x,y in zip(X,Y))
 
@@ -149,12 +161,15 @@ model.train(X_trn, Y_trn, validation_data=(X_val,Y_val), augmenter=augmenter)
 
 model.optimize_thresholds(X_val, Y_val)
 
+
+#       Validation
+#
+#   This section generates evaluation statistics
+
 Y_val_pred = [model.predict_instances(x, n_tiles=model._guess_n_tiles(x), show_tile_progress=False)[0]
               for x in tqdm(X_val)]
 taus = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 stats = [matching_dataset(Y_val, Y_val_pred, thresh=t, show_progress=False) for t in tqdm(taus)]
-
-print(stats)
 
 fig, (ax1,ax2) = plt.subplots(1,2, figsize=(15,5))
 
@@ -172,5 +187,5 @@ ax2.set_ylabel('Number #')
 ax2.grid()
 ax2.legend()
 
-plt.savefig('modelPerformance4.pdf')
+# plt.savefig('output.pdf')
 plt.show()
